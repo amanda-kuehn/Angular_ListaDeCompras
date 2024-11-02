@@ -1,13 +1,31 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from '@auth0/auth0-angular';
+import { Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css'],
+  standalone: true,
+  imports: [RouterModule]
 })
-export class AppComponent {
-  title = 'lista-compras-app';
+export class AppComponent implements OnInit {
+  title = 'Lista de Compras';
+
+  constructor(public auth: AuthService, private router: Router) {}
+
+  ngOnInit() {
+    this.auth.isAuthenticated$.subscribe(loggedIn => {
+      if (loggedIn) {
+        this.router.navigate(['/lista-compras']);
+      }
+    });
+  }
+
+  login() {
+    this.auth.loginWithRedirect();
+  }
 }
+
+
